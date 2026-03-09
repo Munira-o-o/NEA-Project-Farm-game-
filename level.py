@@ -14,7 +14,7 @@ from menu import Menu
 from audiosettings import AudioSettings
 import os
 
-
+#Drawing text function
 def draw_text(text,font,color,x,y,surface):
    img = font.render(text,True,color)
    surface.blit(img,(x,y))

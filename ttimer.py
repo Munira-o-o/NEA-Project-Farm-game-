@@ -8,15 +8,20 @@ class Timer:
         self.start_time = 0
         self.active = False
 
+    #Turns timer on
     def activate(self):
         self.active = True
         self.start_time = pygame.time.get_ticks()
         
         #relative start time
-        
+
+    #Turns timer off  
     def deactivate(self):
+        #Resets
         self.active = False
         self.start_time = 0
+    
+    #Checks timer has run out.
     def udpdate(self):
         current_time = pygame.time.get_ticks()
         if current_time - self.start_time >= self.duration:

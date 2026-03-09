@@ -6,6 +6,7 @@ from ttimer import Timer
 
 class Menu:
     def __init__(self, player, toggle_menu):
+        #Setup & File paths
         self.base_path = dirname(dirname(abspath(__file__)))
         self.player = player
         self.toggle_menu = toggle_menu
@@ -28,9 +29,10 @@ class Menu:
 
 
     def display_money(self):
+        #Money text
         text_surf = self.font.render(f'£{self.player.money}', False, 'Black')     #local variable so i can use text_surf again
         text_rect = text_surf.get_rect(midbottom = (50,40))   
-        
+        #Drawing
         pygame.draw.rect(self.display_surface, 'White', text_rect.inflate(10,10),0,6)
         self.display_surface.blit(text_surf, text_rect)
 
@@ -40,11 +42,12 @@ class Menu:
         self.text_surfs = []
         self.total_height = 0
 
+        #Text for options
         for item in self.options:
             text_surf = self.font.render(item, False, 'Black')
             self.text_surfs.append(text_surf)  
             self.total_height += text_surf.get_height() + (self.padding  * 2)  
-
+        #Setup for drawing menu
         self.total_height += (len(self.text_surfs) - 1) * self.space
         self.menu_top = SCREEN_HEIGHT / 2 - self.total_height / 2
         self.main_rect = pygame.Rect(SCREEN_WIDTH / 2 - self.width / 2,self.menu_top,self.width,self.total_height)
@@ -56,21 +59,22 @@ class Menu:
     def input(self):
         keys = pygame.key.get_pressed()
         self.timer.udpdate()
-
+        #Checks ESC is pressed
         if keys[pygame.K_ESCAPE]:               #closes menu
             self.toggle_menu()
 
         
 
         if not self.timer.active:
+            #Scrolls up
             if keys[pygame.K_UP] or keys[pygame.K_w] :
                 self.index -=1
                 self.timer.activate()
-        
+            #Scrolls down
             if keys[pygame.K_DOWN] or keys[pygame.K_s]:                                   #same problem as before python registers it as multiple presses
                 self.index +=1
                 self.timer.activate()
-
+            #Checks space is pressed
             if keys[pygame.K_SPACE]:
                 self.timer.activate()
 
@@ -89,7 +93,7 @@ class Menu:
             
 
             
-
+        #Checks index is at the bottom
         if self.index < 0:             #makes it go round
             self.index = len(self.options) -1
         if self.index > len(self.options) -1:
@@ -114,26 +118,29 @@ class Menu:
         amount_rect = amount_surf.get_rect(midright = (self.main_rect.right - 20, bg_rect.centery))
         self.display_surface.blit(amount_surf, amount_rect)
 
+        #Display sell/buy
         if selected:
+            #Black border drawing
             pygame.draw.rect(self.display_surface, 'Black', bg_rect,4,4)
-            if self.index < self.sell_border + 1: #sell
+            #Sell
+            if self.index < self.sell_border + 1: 
                 pos_rect = self.sell_text.get_rect(midleft = (self.main_rect.left + 150, bg_rect.centery))             #when in approprate index it will show buy and sell text.
                 self.display_surface.blit(self.sell_text, pos_rect)
-
+            #Buy
             elif  self.index == len(self.options) -1:
                 pos_rect = self.buy_text.get_rect(midleft = (self.main_rect.left + 200, bg_rect.centery))
                 self.display_surface.blit(self.buy_text, pos_rect)
-            else:      #buy
+            else:      
                 pos_rect = self.buy_text.get_rect(midleft = (self.main_rect.left + 150, bg_rect.centery))
                 self.display_surface.blit(self.buy_text, pos_rect)
 
         
-
+    #Updates changes
     def update(self):
         self.input()
         self.display_money()
 
-        
+        #Draws text
         for text_index, text_surf in enumerate(self.text_surfs):
             top = self.main_rect.top + text_index * (text_surf.get_height()+ (self.padding *2) + self.space)
             amount_list = list(self.player.item_inventory.values()) +list(self.player.seed_inventory.values())
